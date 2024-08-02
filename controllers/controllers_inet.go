@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
+	// "fmt"
 	"strings"
 
-	// "fmt"
 	"go-fiber-test/database"
 	m "go-fiber-test/models"
 	"log"
@@ -74,11 +73,6 @@ func Factorial(c *fiber.Ctx) error {
 	var result int
 	result = 1
 
-	// if err != nil {
-	// 	// return c.Status(fiber.StatusBadRequest).SendString("Bad Request")
-	// 	return errors.New("empty parameter")
-	// }
-
 	if x1 < 0 {
 		return errors.New("the number must be more then 0")
 	}
@@ -106,7 +100,7 @@ func Acii(c *fiber.Ctx) error {
 }
 
 func ValidateRegister(c *fiber.Ctx) error {
-	newCompany := new(m.Company)
+	newCompany := new(m.Company01)
 	validate := validator.New()
 
 	validate.RegisterValidation("customName", ValidateCustomName)
@@ -119,7 +113,7 @@ func ValidateRegister(c *fiber.Ctx) error {
 	}
 
 	errorValidate := validate.Struct(newCompany)
-	fmt.Println(errorValidate)
+	// fmt.Println(errorValidate)
 	if errorValidate != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": errorValidate.Error(),
@@ -163,6 +157,17 @@ func GetDog(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(&dog)
+}
+
+// exercise 7.0.2
+func GetDeleteDogs(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dogs []m.Dogs
+
+	db.Unscoped().Where("deleted_at IS NOT NULL").Find(&dogs)
+	// db.Unscoped().Find(&dogs)
+	
+	return c.Status(200).JSON(dogs)
 }
 
 func AddDog(c *fiber.Ctx) error {
@@ -212,13 +217,7 @@ func GetDogJson(c *fiber.Ctx) error {
 
 	db.Find(&dogs)
 
-	type DogsRes struct {
-		Name string `json:"name"`
-		DogID int `json:"dog_id"`
-		Type string `json:"type"`
-	}
-
-	var dataResult []DogsRes
+	var dataResult []m.DogsRes
 	for _, v := range dogs {
 		typeStr := ""
 		if v.DogID == 111 {
@@ -231,27 +230,103 @@ func GetDogJson(c *fiber.Ctx) error {
 			typeStr = "no color"
 		}
 
-		d := DogsRes{
+		d := m.DogsRes{
 			Name: v.Name,
 			DogID: v.DogID,
 			Type: typeStr,
 		}
 
 		dataResult = append(dataResult, d)
-		// sumAmount += v.Amount
 	}
 
-	type ResultData struct {
-		Data []DogsRes `json:"data"`
-		Name string `json:"name"`
-		Count int `json:"count"`
-	}
-
-	r := ResultData{
+	r := m.ResultData{
 		Data: dataResult,
 		Name: "goleng-test",
 		Count: len(dogs),
 	}
 
 	return c.Status(200).JSON(r)
+}
+
+//exercise 7.0.1
+func AddCompany(c *fiber.Ctx) error {
+	db := database.DBConn
+	var newCompany m.Company
+
+	if err := c.BodyParser(&newCompany); err != nil {
+		return c.Status(503).SendString(err.Error())
+	}
+
+	validate := validator.New()
+
+	errorValidate := validate.Struct(newCompany)
+	if errorValidate != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": errorValidate.Error(),
+		})
+	}
+
+	result := db.Where("name = ?", string(newCompany.Name)).Find(&newCompany)
+
+	if result.RowsAffected != 0 {
+		return c.Status(401).SendString("name is required")
+	}
+
+	db.Create(&newCompany)
+
+	return c.Status(201).JSON(newCompany)
+}
+
+func GetAllCompany(c *fiber.Ctx) error {
+	db := database.DBConn
+	var company []m.Company
+
+	db.Find(&company)
+
+	return c.Status(200).JSON(company)
+}
+
+func GetNameCompany(c *fiber.Ctx) error {
+	db := database.DBConn
+	var company []m.Company
+	search := strings.TrimSpace(c.Query("search"))
+
+	result := db.Find(&company, "name = ?", search)
+
+	if result.RowsAffected == 0 {
+		return c.SendStatus(404)
+	}
+
+	return c.Status(200).JSON(&company)
+}
+
+func UpdateCompany(c *fiber.Ctx) error {
+	db := database.DBConn
+	var company m.Company
+	id := c.Params("id")
+
+	if err := c.BodyParser(&company); err != nil {
+		return c.Status(503).SendString(err.Error())
+	}
+
+	db.Where("id = ?", id).Updates(&company)
+
+	return c.Status(200).JSON(fiber.Map{
+		"data": company,
+		"message": "update success",
+	})
+}
+
+func DeleteCompany(c *fiber.Ctx) error {
+	db := database.DBConn
+	var company m.Company
+	id := c.Params("id")
+
+	result := db.Delete(&company, id)
+
+	if result.RowsAffected == 0 {
+		return c.SendStatus(404)
+	}
+
+	return c.Status(200).SendString("delete success")
 }

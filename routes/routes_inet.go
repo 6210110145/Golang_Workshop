@@ -37,9 +37,11 @@ func InetRoutes(app *fiber.App) {
 	dog.Post("/", c.AddDog)
 	dog.Get("/", c.GetDogs)
 	dog.Get("/filter", c.GetDog)
+	dog.Get("/json", c.GetDogJson)
+	// exercise 7.0.2
+	dog.Get("/ddog", c.GetDeleteDogs)
 	dog.Put("/:id", c.UpdateDog)
 	dog.Delete("/:id", c.RemoveDog)
-	dog.Get("/json", c.GetDogJson)
 
 	// api/v2
 	v2 := api.Group("/v2")
@@ -52,4 +54,12 @@ func InetRoutes(app *fiber.App) {
 
 	// exercise 6
 	v1.Post("/register", c.ValidateRegister)
+
+	// exercise 7.0.2
+	com := v1.Group("/company")
+	com.Post("/", c.AddCompany)
+	com.Get("/", c.GetAllCompany)
+	com.Get("/filter", c.GetNameCompany)
+	com.Put("/:id", c.UpdateCompany)
+	com.Delete("/:id", c.DeleteCompany)
 }

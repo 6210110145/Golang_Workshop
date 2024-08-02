@@ -14,7 +14,7 @@ type User struct {
 }
 
 // exercise 6
-type Company struct {
+type Company01 struct {
 	Email    string `json:"email" validate:"required,email"`
 	Name     string `json:"name" validate:"required,customName"`
 	Password string `json:"password" validate:"required,min=6,max=20"`
@@ -28,4 +28,29 @@ type Dogs struct {
 	gorm.Model
 	DogID int `json:"dog_id"`
 	Name string `json:"name"`
+}
+
+// exercise 7.0
+type DogsRes struct {
+	Name string `json:"name"`
+	DogID int `json:"dog_id"`
+	Type string `json:"type"`
+}
+
+type ResultData struct {
+	Data []DogsRes `json:"data"`
+	Name string `json:"name"`
+	Count int `json:"count"`
+}
+
+// exercise 7.0.1
+type Company struct {
+	gorm.Model
+	Name string	`json:"name" validate:"required"`
+	Type string `json:"type" validate:"required"`
+	Email string `json:"email" validate:"required,email"`
+	Address string `json:"address" validate:"required"`
+	Phone string `json:"phone" validate:"required,max=10,min=10,numeric"`
+	Website string `json:"website" validate:"required,url,uri"`
+	Employee int `json:"employee"`
 }
