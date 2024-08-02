@@ -1,0 +1,207 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func main() {
+	// exercise0()
+
+
+	// exercise1()
+
+
+	// // exercise 1.2
+	// base := 2
+	// exponent := 20
+	// numExponent(float64(base), exponent)
+
+
+	// //exercise 2
+	// x := []int{
+	// 	48, 96, 86, 68, 57, 82, 63, 70, 37, 34, 83, 27, 19, 97, 9, 17,
+	// }
+	
+	// minNumber, maxNumber := numberMinMax(x)
+	// fmt.Printf("Minimum Number is %d\n", minNumber)
+	// fmt.Printf("Maximim Number is %d\n", maxNumber)
+
+
+	//exercise 3
+	y := 1000
+	result := findNumber(y)
+	fmt.Printf("1 - %d Total of 9 number = %d", y, result)
+
+
+	// //execise 4
+	// var myWords = "AW SOME GO!" //AW SOME GO!, ine t
+
+	// myCutWords := cutText(myWords)
+
+	// fmt.Println("My Word: ",myWords)
+	// fmt.Println("Result: ",myCutWords)
+
+
+	//exercise 5
+	type People struct {
+		Name string
+		Age int
+		Address string
+	}
+	
+	peoples := map[string]People{
+		"p1": {
+			Name: "Teerapat Photongkam",
+			Age: 24,
+			Address: "Nakhon Si Thammarat, 80000",
+		},
+		"p2": {
+			Name: "Isora Hata",
+			Age: 35,
+			Address: "Bangkok",
+		},
+		"p3": {
+			Name: "Pong Nawapath",
+			Age: 20,
+			Address: "Narathiwat, 96000",
+		},
+		"p4": {
+			Name: "Jim Curry",
+			Age: 26,
+			Address: "Virginir, 22202",
+		},
+	}
+
+	fmt.Println("Result: ")
+	for _, v := range peoples {
+		fmt.Printf("Name-: %s (Age: %d)\n", v.Name, v.Age)
+		fmt.Printf("Address-: %s \n\n", v.Address)
+	}
+	fmt.Println(peoples["p1"].Address)
+
+
+	// //exercise 6
+	// type Employee struct {
+	// 	numberID string
+	// 	Name string
+	// 	Age int
+	// 	Role string
+	// }
+
+	// var e1 Employee
+	// e1.numberID = "E1000"
+	// e1.Name = "Teerapat Photongkam"
+	// e1.Age = 24
+	// e1.Role = "Junior Devoloper"
+
+	// fmt.Println("Result: ")
+	// fmt.Printf("รหัสพนักงาน: %s\nชื่อ: %s อายุ %d ปี\nตำแหน่ง: %s ", e1.numberID, e1.Name, e1.Age, e1.Role)
+
+
+	// //exercise Special
+	// for i := 0; i <= 6; i++ {
+	// 	for j := 0; j < i; j++ {
+	// 		fmt.Printf("*")
+	// 	}
+	// 	fmt.Println("")
+	// }
+}
+
+//exercise 0
+func exercise0() {
+	
+	i := 0
+
+	fmt.Println("Example-: Switch case condition")
+	if i == 0 {
+		fmt.Println("Zero")
+	}else if i == 1 {
+		fmt.Println("One")
+	}else if i == 2 {
+		fmt.Println("Two")
+	}else if i == 3 {
+		fmt.Println("Three")
+	}else {
+		fmt.Println("Your i not in case.")
+	}
+}
+
+
+// exercise 1
+func exercise1() {
+	total := 0
+	fmt.Println("1-100 มีเลขที่หาร3ลงตัวประกอบด้วย: ")
+	for i := 1; i <= 100; i++ {
+		if i % 3 == 0 {
+			total += 1
+			fmt.Printf("%d ", i)
+		}
+	}
+	fmt.Printf("\nมีทั้งหมด %d ตัว", total)
+}
+
+// ex1.2
+func numExponent(b float64, e int)  {
+	var total float64
+	total = 1.00
+	if e > 0 {
+		for i := 1; i <= e; i++ {
+			total *= b
+		}
+		fmt.Printf("%.0f to the power %d is %f\n", b, e, total)
+	}else if e < 0 {
+		e *= -1
+		for i := 1; i <= e; i++ {
+			total *= (1.00 / b)
+		}
+		fmt.Printf("%.0f to the power -%d is %f\n", b, e, total)
+	}else {
+		fmt.Printf("%.0f to the power 0 is %f\n", b, total)
+	}
+}
+
+// ex2
+func numberMinMax(num []int) (int, int){
+	var min, max int
+	for _, v := range num {
+		if v > max {
+			max = v
+		}
+	}
+
+	min = max
+	for _, v := range num {
+		if v < min {
+			min = v
+		}
+	}
+	
+	return min, max
+}
+
+// ex3
+func findNumber(num int) (int) {
+	
+	total := 0
+	for i := 1; i <= num; i++ {
+		numString := strconv.Itoa(i)
+		for _, v := range numString { // 1 0 9
+			if v == '9' {
+				total++
+			}
+		}
+	}
+	return total
+}
+
+// ex4
+func cutText(text string) (string) {
+	var t string
+	for _, v := range text {
+		if v != ' ' {
+			t += string(v)
+		}
+	}
+	return string(t)
+}
