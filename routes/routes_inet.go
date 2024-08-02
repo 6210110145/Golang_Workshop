@@ -31,7 +31,15 @@ func InetRoutes(app *fiber.App) {
 
 	// exercise 5.1
 	v1.Post("/fact/:num", c.Factorial)
-	
+
+	//CRUD dogs
+	dog := v1.Group("/dog")
+	dog.Post("/", c.AddDog)
+	dog.Get("/", c.GetDogs)
+	dog.Get("/filter", c.GetDog)
+	dog.Put("/:id", c.UpdateDog)
+	dog.Delete("/:id", c.RemoveDog)
+
 	// api/v2
 	v2 := api.Group("/v2")
 	v2.Get("/", c.HelloV2)

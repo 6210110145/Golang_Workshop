@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	// "fmt"
+	"go-fiber-test/database"
 	m "go-fiber-test/models"
 	"log"
 	"regexp"
@@ -51,7 +52,7 @@ func QueryTest(c *fiber.Ctx) error {
 
 func ValidTest(c *fiber.Ctx) error {
 	//Connect to database
-	
+
 	user := new(m.User)
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -85,7 +86,7 @@ func Factorial(c *fiber.Ctx) error {
 	if x1 == 0 {
 		str := x + "! = " + strconv.Itoa(result)
 		return c.JSON(str)
-	}else {
+	} else {
 		for i := x1; i > 0; i-- {
 			result *= i
 		}
@@ -128,7 +129,7 @@ func ValidateRegister(c *fiber.Ctx) error {
 	return c.JSON(newCompany)
 }
 
-func ValidateCustomName(fl validator.FieldLevel) bool  {
+func ValidateCustomName(fl validator.FieldLevel) bool {
 	requiredName := `^[a-z,A-Z,0-9,_,-]+$`
 	matched, _ := regexp.MatchString(requiredName, fl.Field().String())
 
@@ -140,4 +141,67 @@ func ValidateCustomWeb(fl validator.FieldLevel) bool {
 	matched, _ := regexp.MatchString(requiredWeb, fl.Field().String())
 
 	return matched
+}
+
+func GetDogs(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dogs []m.Dogs
+
+	db.Find(&dogs)
+	return c.Status(200).JSON(dogs)
+}
+
+func GetDog(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dog []m.Dogs
+	search := strings.TrimSpace(c.Query("search"))
+
+	result := db.Find(&dog, "dog_id = ?", search)
+
+	if result.RowsAffected == 0 {
+		return c.SendStatus(404)
+	}
+
+	return c.Status(200).JSON(&dog)
+}
+
+func AddDog(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dog m.Dogs
+
+	if err := c.BodyParser(&dog); err != nil {
+		return c.Status(503).SendString(err.Error())
+	}
+
+	db.Create(&dog)
+
+	return c.Status(201).JSON(dog)
+}
+
+func UpdateDog(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dog m.Dogs
+	id := c.Params("id")
+
+	if err := c.BodyParser(&dog); err != nil {
+		return c.Status(503).SendString(err.Error())
+	}
+
+	db.Where("id = ?", id).Updates(&dog)
+
+	return c.Status(200).JSON(dog)
+}
+
+func RemoveDog(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dog m.Dogs
+	id := c.Params("id")
+
+	result := db.Delete(&dog, id)
+
+	if result.RowsAffected == 0 {
+		return c.SendStatus(404)
+	}
+
+	return c.SendStatus(200)
 }
