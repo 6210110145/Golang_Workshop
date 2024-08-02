@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 type Person struct {
 	Name string `json:"name"`
 	Pass string `json:"pass"`
@@ -13,11 +15,17 @@ type User struct {
 
 // exercise 6
 type Company struct {
-	Email string `json:"email" validate:"required,email"`
-	Name string `json:"name" validate:"required,customName"`
+	Email    string `json:"email" validate:"required,email"`
+	Name     string `json:"name" validate:"required,customName"`
 	Password string `json:"password" validate:"required,min=6,max=20"`
-	Line string `json:"line"`
-	Phone string `json:"phone" validate:"required,max=10,min=10,numeric"`
+	Line     string `json:"line"`
+	Phone    string `json:"phone" validate:"required,max=10,min=10,numeric"`
 	Business string `json:"business" validate:"required"`
-	Website string `json:"website" validate:"required,url,uri,customWeb"`
+	Website  string `json:"website" validate:"required,url,uri,customWeb"`
+}
+
+type Dogs struct {
+	gorm.Model
+	DogID int `json:"dog_id"`
+	Name string `json:"name"`
 }
