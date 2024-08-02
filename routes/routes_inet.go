@@ -40,6 +40,10 @@ func InetRoutes(app *fiber.App) {
 	dog.Get("/json", c.GetDogJson)
 	// exercise 7.0.2
 	dog.Get("/ddog", c.GetDeleteDogs)
+
+	// exercise 7.1
+	dog.Get("/sdog", c.GetSomeDogs)
+
 	dog.Put("/:id", c.UpdateDog)
 	dog.Delete("/:id", c.RemoveDog)
 

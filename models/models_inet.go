@@ -38,9 +38,13 @@ type DogsRes struct {
 }
 
 type ResultData struct {
+	Count int `json:"count"`
 	Data []DogsRes `json:"data"`
 	Name string `json:"name"`
-	Count int `json:"count"`
+	Red int `json:"sum_red"`
+	Green int `json:"sum_green"`
+	Pink int `json:"sum_pink"`
+	Nocolor int `json:"sum_nocolor"`
 }
 
 // exercise 7.0.1

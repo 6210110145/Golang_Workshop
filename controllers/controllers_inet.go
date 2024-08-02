@@ -165,8 +165,17 @@ func GetDeleteDogs(c *fiber.Ctx) error {
 	var dogs []m.Dogs
 
 	db.Unscoped().Where("deleted_at IS NOT NULL").Find(&dogs)
-	// db.Unscoped().Find(&dogs)
 	
+	return c.Status(200).JSON(dogs)
+}
+
+// exercise 7.1
+func GetSomeDogs(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dogs []m.Dogs
+
+	db.Where("dog_id BETWEEN 51 AND 99").Find(&dogs)
+
 	return c.Status(200).JSON(dogs)
 }
 
@@ -211,23 +220,29 @@ func RemoveDog(c *fiber.Ctx) error {
 	return c.SendStatus(200)
 }
 
+// exercise 7.2
 func GetDogJson(c *fiber.Ctx) error {
 	db := database.DBConn
 	var dogs []m.Dogs
+	var red, green, pink, nocolor int
 
 	db.Find(&dogs)
 
 	var dataResult []m.DogsRes
 	for _, v := range dogs {
 		typeStr := ""
-		if v.DogID == 111 {
-			typeStr = "black"
-		}else if v.DogID == 222 {
-			typeStr = "white"
-		}else if v.DogID == 333 {
+		if v.DogID >= 10 && v.DogID <= 50 {
 			typeStr = "red"
+			red++
+		}else if v.DogID >= 100 && v.DogID <= 150 {
+			typeStr = "green"
+			green++
+		}else if v.DogID >= 200 && v.DogID <= 250 {
+			typeStr = "pink"
+			pink++
 		}else {
 			typeStr = "no color"
+			nocolor++
 		}
 
 		d := m.DogsRes{
@@ -240,9 +255,13 @@ func GetDogJson(c *fiber.Ctx) error {
 	}
 
 	r := m.ResultData{
+		Count: len(dogs),
 		Data: dataResult,
 		Name: "goleng-test",
-		Count: len(dogs),
+		Red: red,
+		Green: green,
+		Pink: pink,
+		Nocolor: nocolor,
 	}
 
 	return c.Status(200).JSON(r)
