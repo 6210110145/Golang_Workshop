@@ -349,3 +349,26 @@ func DeleteCompany(c *fiber.Ctx) error {
 
 	return c.Status(200).SendString("delete success")
 }
+
+//project
+func CreateProfile(c *fiber.Ctx) error {
+	db := database.DBConn
+	var newprofile m.Profile
+
+	if err := c.BodyParser(&newprofile); err != nil {
+		return c.Status(503).SendString(err.Error())
+	}
+
+	db.Create(&newprofile)
+
+	return c.Status(201).JSON(newprofile)
+}
+
+func ShowProfiles(c *fiber.Ctx) error {
+	db := database.DBConn
+	var profile []m.Profile
+
+	db.Find(&profile)
+
+	return c.Status(200).JSON(profile)
+}

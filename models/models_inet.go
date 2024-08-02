@@ -26,35 +26,47 @@ type Company01 struct {
 
 type Dogs struct {
 	gorm.Model
-	DogID int `json:"dog_id"`
-	Name string `json:"name"`
+	DogID int    `json:"dog_id"`
+	Name  string `json:"name"`
 }
 
 // exercise 7.0
 type DogsRes struct {
-	Name string `json:"name"`
-	DogID int `json:"dog_id"`
-	Type string `json:"type"`
+	Name  string `json:"name"`
+	DogID int    `json:"dog_id"`
+	Type  string `json:"type"`
 }
 
 type ResultData struct {
-	Count int `json:"count"`
-	Data []DogsRes `json:"data"`
-	Name string `json:"name"`
-	Red int `json:"sum_red"`
-	Green int `json:"sum_green"`
-	Pink int `json:"sum_pink"`
-	Nocolor int `json:"sum_nocolor"`
+	Count   int       `json:"count"`
+	Data    []DogsRes `json:"data"`
+	Name    string    `json:"name"`
+	Red     int       `json:"sum_red"`
+	Green   int       `json:"sum_green"`
+	Pink    int       `json:"sum_pink"`
+	Nocolor int       `json:"sum_nocolor"`
 }
 
 // exercise 7.0.1
 type Company struct {
 	gorm.Model
-	Name string	`json:"name" validate:"required"`
-	Type string `json:"type" validate:"required"`
-	Email string `json:"email" validate:"required,email"`
-	Address string `json:"address" validate:"required"`
-	Phone string `json:"phone" validate:"required,max=10,min=10,numeric"`
-	Website string `json:"website" validate:"required,url,uri"`
-	Employee int `json:"employee"`
+	Name     string `json:"name" validate:"required"`
+	Type     string `json:"type" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Address  string `json:"address" validate:"required"`
+	Phone    string `json:"phone" validate:"required,max=10,min=10,numeric"`
+	Website  string `json:"website" validate:"required,url,uri"`
+	Employee int    `json:"employee"`
+}
+
+//Project
+type Profile struct {
+	gorm.Model
+	EmployeeId int    `json:"employee_id"`
+	Name       string `json:"name"`
+	Lastname   string `json:"lastname"`
+	Birthday   string `json:"birthday"`
+	Age        int    `json:"age"`
+	Email      string `json:"email" validate:"email"`
+	Tel        string `json:"tel" validate:"max=10,min=10,numeric"`
 }

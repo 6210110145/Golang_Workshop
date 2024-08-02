@@ -13,7 +13,7 @@ func InetRoutes(app *fiber.App) {
 	// exercise 5.0
 	app.Use(basicauth.New(basicauth.Config{
 		Users: map[string]string{
-			"gofiber": "21022566",
+			"testgo": "23012023",
 		},
 	}))
 
@@ -66,4 +66,9 @@ func InetRoutes(app *fiber.App) {
 	com.Get("/filter", c.GetNameCompany)
 	com.Put("/:id", c.UpdateCompany)
 	com.Delete("/:id", c.DeleteCompany)
+
+	// project
+	profile := v1.Group("/profile")
+	profile.Post("/", c.CreateProfile)
+	profile.Get("/", c.ShowProfiles)
 }
