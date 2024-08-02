@@ -205,3 +205,53 @@ func RemoveDog(c *fiber.Ctx) error {
 
 	return c.SendStatus(200)
 }
+
+func GetDogJson(c *fiber.Ctx) error {
+	db := database.DBConn
+	var dogs []m.Dogs
+
+	db.Find(&dogs)
+
+	type DogsRes struct {
+		Name string `json:"name"`
+		DogID int `json:"dog_id"`
+		Type string `json:"type"`
+	}
+
+	var dataResult []DogsRes
+	for _, v := range dogs {
+		typeStr := ""
+		if v.DogID == 111 {
+			typeStr = "black"
+		}else if v.DogID == 222 {
+			typeStr = "white"
+		}else if v.DogID == 333 {
+			typeStr = "red"
+		}else {
+			typeStr = "no color"
+		}
+
+		d := DogsRes{
+			Name: v.Name,
+			DogID: v.DogID,
+			Type: typeStr,
+		}
+
+		dataResult = append(dataResult, d)
+		// sumAmount += v.Amount
+	}
+
+	type ResultData struct {
+		Data []DogsRes `json:"data"`
+		Name string `json:"name"`
+		Count int `json:"count"`
+	}
+
+	r := ResultData{
+		Data: dataResult,
+		Name: "goleng-test",
+		Count: len(dogs),
+	}
+
+	return c.Status(200).JSON(r)
+}
